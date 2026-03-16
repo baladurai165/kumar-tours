@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voyager — Journeys Beyond Ordinary</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --sand: #f5f0e8;
+    --warm-white: #faf8f3;
+    --ink: #1a1714;
+    --earth: #8b6f47;
+    --terracotta: #c4623a;
+    --sage: #5a7a5e;
+    --gold: #c9a84c;
+    --mist: #d8cfc4;
+    --deep: #2d2420;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm-white);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1.4rem 4rem;
+    background: rgba(250,248,243,0.88);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(139,111,71,0.12);
+    transition: padding .3s;
+  }
+  .logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 600;
+    letter-spacing: .06em; color: var(--ink);
+    text-decoration: none;
+  }
+  .logo span { color: var(--terracotta); }
+  .nav-links { display: flex; gap: 2.4rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; font-size: .85rem; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--ink); transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--terracotta); }
+  .nav-cta {
+    background: var(--terracotta); color: #fff !important;
+    padding: .5rem 1.4rem; border-radius: 2rem;
+  }
+  .nav-cta:hover { background: var(--earth); color: #fff !important; }
+
+  /* ── HERO ── */
+  .hero {
+    height: 100vh; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: 
+      radial-gradient(ellipse at 70% 50%, rgba(196,98,58,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 20% 80%, rgba(90,122,94,0.14) 0%, transparent 50%),
+      linear-gradient(160deg, #1a1714 0%, #2d2420 40%, #3d2e27 70%, #1e1a17 100%);
+  }
+  .hero-pattern {
+    position: absolute; inset: 0; opacity: .05;
+    background-image: repeating-linear-gradient(
+      45deg, var(--gold) 0, var(--gold) 1px, transparent 0, transparent 50%);
+    background-size: 28px 28px;
+  }
+  .hero-content { position: relative; z-index: 2; text-align: center; padding: 2rem; }
+  .hero-eyebrow {
+    font-size: .78rem; font-weight: 500; letter-spacing: .22em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 1.4rem; opacity: 0;
+    animation: fadeUp .7s .2s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    font-weight: 300; line-height: 1.05;
+    color: var(--warm-white);
+    margin-bottom: 1.6rem; opacity: 0;
+    animation: fadeUp .7s .4s forwards;
+  }
+  .hero-title em { color: var(--terracotta); font-style: italic; }
+  .hero-sub {
+    font-size: 1.05rem; font-weight: 300; color: rgba(245,240,232,0.7);
+    max-width: 480px; margin: 0 auto 2.8rem; line-height: 1.7;
+    opacity: 0; animation: fadeUp .7s .6s forwards;
+  }
+  .hero-btns {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp .7s .8s forwards;
+  }
+  .btn-primary {
+    background: var(--terracotta); color: #fff;
+    padding: .9rem 2.4rem; border-radius: 3rem;
+    font-size: .9rem; font-weight: 500; letter-spacing: .05em;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: transform .2s, box-shadow .2s, background .2s;
+    box-shadow: 0 4px 20px rgba(196,98,58,0.4);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(196,98,58,0.5); }
+  .btn-outline {
+    background: transparent; color: var(--warm-white);
+    padding: .9rem 2.4rem; border-radius: 3rem;
+    font-size: .9rem; font-weight: 500; letter-spacing: .05em;
+    text-decoration: none; border: 1.5px solid rgba(245,240,232,0.35); cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .btn-outline:hover { border-color: var(--warm-white); background: rgba(245,240,232,0.08); }
+  .scroll-hint {
+    position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: .5rem;
+    color: rgba(245,240,232,0.45); font-size: .7rem; letter-spacing: .15em;
+    text-transform: uppercase; animation: bounce 2s infinite;
+  }
+  .scroll-hint::after {
+    content: ''; width: 1px; height: 40px;
+    background: linear-gradient(to bottom, rgba(245,240,232,0.4), transparent);
+  }
+
+  /* ── DESTINATIONS ── */
+  .section { padding: 6rem 4rem; }
+  .section-label {
+    font-size: .75rem; font-weight: 500; letter-spacing: .2em;
+    text-transform: uppercase; color: var(--terracotta);
+    margin-bottom: .8rem;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 300;
+    line-height: 1.15; margin-bottom: 3.5rem; max-width: 520px;
+  }
+  .destinations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .dest-card {
+    border-radius: 1.2rem; overflow: hidden;
+    position: relative; cursor: pointer;
+    transition: transform .3s, box-shadow .3s;
+    aspect-ratio: 3/4;
+  }
+  .dest-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(26,23,20,0.18); }
+  .dest-card:first-child { grid-row: span 2; aspect-ratio: auto; min-height: 400px; }
+  .dest-img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .5s;
+  }
+  .dest-card:hover .dest-img { transform: scale(1.06); }
+  .dest-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(26,23,20,0.82) 0%, transparent 55%);
+  }
+  .dest-info {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 1.8rem 1.6rem;
+  }
+  .dest-tag {
+    display: inline-block;
+    background: rgba(201,168,76,0.25); border: 1px solid rgba(201,168,76,0.5);
+    color: var(--gold); font-size: .7rem; font-weight: 500;
+    letter-spacing: .1em; text-transform: uppercase;
+    padding: .25rem .7rem; border-radius: 2rem; margin-bottom: .7rem;
+  }
+  .dest-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem; font-weight: 400; color: #fff;
+    margin-bottom: .3rem;
+  }
+  .dest-meta { font-size: .8rem; color: rgba(255,255,255,0.6); }
+
+  /* Gradient placeholder backgrounds for destination cards */
+  .dest-bg-1 { background: linear-gradient(135deg, #2d5a3d 0%, #1a3a28 40%, #4a7c59 100%); }
+  .dest-bg-2 { background: linear-gradient(135deg, #3d2d1a 0%, #6b4a2a 50%, #8b6535 100%); }
+  .dest-bg-3 { background: linear-gradient(135deg, #1a2d5a 0%, #2a4a8b 50%, #3a5a9b 100%); }
+  .dest-bg-4 { background: linear-gradient(135deg, #5a1a2d 0%, #8b2a4a 50%, #9b3a5a 100%); }
+
+  .dest-card-visual {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 4rem; position: relative; overflow: hidden;
+  }
+  .dest-card-visual::before {
+    content: ''; position: absolute; inset: 0;
+    background: inherit; filter: blur(0);
+  }
+
+  /* ── BOOKING SECTION ── */
+  #booking {
+    background: var(--sand);
+    border-radius: 2rem; margin: 0 2rem 4rem;
+    padding: 5rem 4rem;
+  }
+  .booking-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5rem; align-items: start; }
+  .booking-form {
+    background: #fff; border-radius: 1.4rem;
+    padding: 2.8rem; box-shadow: 0 8px 40px rgba(26,23,20,0.08);
+  }
+  .form-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 600; margin-bottom: .3rem;
+  }
+  .form-subtitle { font-size: .85rem; color: var(--earth); margin-bottom: 2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .form-group { margin-bottom: 1.2rem; }
+  .form-group label {
+    display: block; font-size: .75rem; font-weight: 500;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--earth); margin-bottom: .45rem;
+  }
+  .form-group input,
+  .form-group select {
+    width: 100%; padding: .8rem 1rem;
+    border: 1.5px solid var(--mist); border-radius: .7rem;
+    font-family: 'DM Sans', sans-serif; font-size: .9rem;
+    color: var(--ink); background: var(--warm-white);
+    transition: border-color .2s, box-shadow .2s;
+    outline: none; appearance: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--terracotta);
+    box-shadow: 0 0 0 3px rgba(196,98,58,0.12);
+  }
+  .form-group select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238b6f47' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; }
+  .price-preview {
+    background: linear-gradient(135deg, var(--terracotta), var(--earth));
+    border-radius: .9rem; padding: 1.2rem 1.4rem;
+    display: flex; justify-content: space-between; align-items: center;
+    margin: 1.4rem 0;
+  }
+  .price-label { font-size: .78rem; color: rgba(255,255,255,0.8); margin-bottom: .2rem; }
+  .price-amount { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: #fff; }
+  .price-note { font-size: .72rem; color: rgba(255,255,255,0.65); }
+  .btn-book {
+    width: 100%; padding: 1rem; border-radius: .9rem;
+    background: var(--ink); color: #fff; font-family: 'DM Sans', sans-serif;
+    font-size: .95rem; font-weight: 500; letter-spacing: .04em;
+    border: none; cursor: pointer; transition: background .2s, transform .1s;
+  }
+  .btn-book:hover { background: var(--deep); transform: translateY(-1px); }
+  .btn-book:active { transform: translateY(0); }
+
+  /* ── FEATURES ── */
+  .features { display: flex; flex-direction: column; gap: 1.8rem; }
+  .feature-item { display: flex; gap: 1.2rem; align-items: flex-start; }
+  .feature-icon {
+    width: 44px; height: 44px; border-radius: .8rem; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem; background: var(--warm-white);
+    box-shadow: 0 2px 10px rgba(26,23,20,0.08);
+  }
+  .feature-text h4 { font-size: .95rem; font-weight: 500; margin-bottom: .25rem; }
+  .feature-text p { font-size: .83rem; color: var(--earth); line-height: 1.6; }
+
+  /* ── PAYMENT PAGE ── */
+  #payment-page {
+    display: none;
+    min-height: 100vh;
+    background: var(--warm-white);
+    padding: 7rem 4rem 4rem;
+  }
+  #payment-page.active { display: block; }
+  .payment-container { max-width: 900px; margin: 0 auto; }
+  .payment-header { text-align: center; margin-bottom: 3rem; }
+  .payment-header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem; font-weight: 300; margin-bottom: .5rem;
+  }
+  .payment-header p { font-size: .9rem; color: var(--earth); }
+  .payment-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 2.5rem; }
+  .payment-form-card, .order-summary {
+    background: #fff; border-radius: 1.4rem; padding: 2.2rem;
+    box-shadow: 0 4px 24px rgba(26,23,20,0.07);
+  }
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem; font-weight: 600; margin-bottom: 1.5rem;
+    padding-bottom: .8rem; border-bottom: 1px solid var(--mist);
+  }
+  .payment-methods { display: flex; gap: .7rem; margin-bottom: 1.5rem; }
+  .pay-method {
+    flex: 1; padding: .7rem; border-radius: .7rem;
+    border: 1.5px solid var(--mist); cursor: pointer; text-align: center;
+    font-size: .8rem; font-weight: 500; transition: all .2s; background: #fff;
+    color: var(--ink);
+  }
+  .pay-method.active { border-color: var(--terracotta); background: rgba(196,98,58,0.06); color: var(--terracotta); }
+  .card-number-wrap { position: relative; }
+  .card-icons { position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); display: flex; gap: .3rem; font-size: .8rem; }
+  .order-item { display: flex; justify-content: space-between; align-items: center; padding: .7rem 0; border-bottom: 1px solid var(--mist); }
+  .order-item:last-of-type { border-bottom: none; }
+  .order-item-label { font-size: .88rem; color: #555; }
+  .order-item-value { font-size: .88rem; font-weight: 500; }
+  .order-total { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 2px solid var(--ink); }
+  .order-total-label { font-size: 1rem; font-weight: 500; }
+  .order-total-value { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 600; color: var(--terracotta); }
+  .trust-badges { display: flex; gap: .8rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .badge { display: flex; align-items: center; gap: .4rem; font-size: .72rem; color: var(--sage); font-weight: 500; }
+  .btn-pay {
+    width: 100%; padding: 1.1rem; border-radius: .9rem;
+    background: linear-gradient(135deg, var(--terracotta), var(--earth));
+    color: #fff; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 500; border: none; cursor: pointer;
+    margin-top: 1.5rem; transition: opacity .2s, transform .1s;
+    box-shadow: 0 4px 20px rgba(196,98,58,0.3);
+  }
+  .btn-pay:hover { opacity: .9; transform: translateY(-1px); }
+  .back-btn {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .85rem; color: var(--earth); cursor: pointer;
+    background: none; border: none; padding: 0; margin-bottom: 2rem;
+    font-family: 'DM Sans', sans-serif; transition: color .2s;
+  }
+  .back-btn:hover { color: var(--terracotta); }
+
+  /* ── SUCCESS ── */
+  #success-page { display: none; min-height: 100vh; background: var(--warm-white); padding: 7rem 2rem 4rem; text-align: center; }
+  #success-page.active { display: block; }
+  .success-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--sage), #3d6b41); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 2rem; box-shadow: 0 8px 30px rgba(90,122,94,0.3); }
+  .success-title { font-family: 'Cormorant Garamond', serif; font-size: 3rem; font-weight: 300; margin-bottom: .8rem; }
+  .success-sub { font-size: 1rem; color: var(--earth); margin-bottom: 2.5rem; max-width: 400px; margin-left: auto; margin-right: auto; line-height: 1.7; }
+  .booking-ref { background: var(--sand); border-radius: .9rem; padding: 1.2rem 2rem; display: inline-block; font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; letter-spacing: .1em; color: var(--terracotta); font-weight: 600; margin-bottom: 2.5rem; }
+  .ref-label { font-family: 'DM Sans', sans-serif; font-size: .72rem; font-weight: 500; letter-spacing: .1em; text-transform: uppercase; color: var(--earth); display: block; margin-bottom: .3rem; }
+
+  /* ── MAIN PAGE wrapper ── */
+  #main-page { display: block; }
+  #main-page.hidden { display: none; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink); color: rgba(245,240,232,0.6);
+    text-align: center; padding: 2rem; font-size: .8rem;
+    letter-spacing: .05em;
+  }
+  footer strong { color: var(--warm-white); }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50%      { transform: translateX(-50%) translateY(-8px); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.2rem 2rem; }
+    .nav-links { display: none; }
+    .section { padding: 4rem 2rem; }
+    #booking { margin: 0 1rem 3rem; padding: 3rem 2rem; }
+    .booking-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .payment-grid { grid-template-columns: 1fr; }
+    #payment-page { padding: 7rem 1.5rem 3rem; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVIGATION ── -->
+<nav>
+  <a href="#" class="logo">VOY<span>A</span>GER</a>
+  <ul class="nav-links">
+    <li><a href="#destinations">Destinations</a></li>
+    <li><a href="#booking">Packages</a></li>
+    <li><a href="#booking">About</a></li>
+    <li><a href="#booking" class="nav-cta">Book Now</a></li>
+  </ul>
+</nav>
+
+<!-- ══ MAIN PAGE ══ -->
+<div id="main-page">
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pattern"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">✦ Luxury Travel Experiences</p>
+      <h1 class="hero-title">Journey to<br>the <em>Extraordinary</em></h1>
+      <p class="hero-sub">Handcrafted itineraries to the world's most captivating destinations. Every journey is a story waiting to be written.</p>
+      <div class="hero-btns">
+        <a href="#booking" class="btn-primary">Reserve Your Journey</a>
+        <a href="#destinations" class="btn-outline">Explore Destinations</a>
+      </div>
+    </div>
+    <div class="scroll-hint">Scroll</div>
+  </section>
+
+  <!-- ── DESTINATIONS ── -->
+  <section id="destinations" class="section">
+    <p class="section-label">Curated Destinations</p>
+    <h2 class="section-title">The world's most<br>enchanting places</h2>
+    <div class="destinations-grid">
+
+      <div class="dest-card" onclick="selectDestination('Kyoto, Japan', 2890)">
+        <div class="dest-card-visual dest-bg-1">
+          <span style="position:relative;z-index:1;">🌸</span>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <span class="dest-tag">Asia</span>
+          <div class="dest-name">Kyoto, Japan</div>
+          <div class="dest-meta">7 nights · From $2,890</div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="selectDestination('Marrakech, Morocco', 1990)">
+        <div class="dest-card-visual dest-bg-2">
+          <span style="position:relative;z-index:1;">🕌</span>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <span class="dest-tag">Africa</span>
+          <div class="dest-name">Marrakech, Morocco</div>
+          <div class="dest-meta">5 nights · From $1,990</div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="selectDestination('Amalfi Coast, Italy', 3450)">
+        <div class="dest-card-visual dest-bg-3">
+          <span style="position:relative;z-index:1;">🏛️</span>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <span class="dest-tag">Europe</span>
+          <div class="dest-name">Amalfi Coast, Italy</div>
+          <div class="dest-meta">8 nights · From $3,450</div>
+        </div>
+      </div>
+
+      <div class="dest-card" onclick="selectDestination('Patagonia, Argentina', 4200)">
+        <div class="dest-card-visual dest-bg-4">
+          <span style="position:relative;z-index:1;">🏔️</span>
+        </div>
+        <div class="dest-overlay"></div>
+        <div class="dest-info">
+          <span class="dest-tag">South America</span>
+          <div class="dest-name">Patagonia, Argentina</div>
+          <div class="dest-meta">10 nights · From $4,200</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── BOOKING SECTION ── -->
+  <section id="booking">
+    <div class="booking-grid">
+
+      <!-- Left: Info -->
+      <div>
+        <p class="section-label">Reserve Your Slot</p>
+        <h2 class="section-title" style="margin-bottom:1.5rem;">Plan your perfect<br>getaway today</h2>
+        <p style="font-size:.9rem;color:var(--earth);line-height:1.8;margin-bottom:2.5rem;">
+          Choose from our curated journeys and secure your preferred dates. Our travel concierge will confirm your booking within 24 hours.
+        </p>
+        <div class="features">
+          <div class="feature-item">
+            <div class="feature-icon">✦</div>
+            <div class="feature-text">
+              <h4>Free Cancellation</h4>
+              <p>Cancel up to 30 days before departure with a full refund — no questions asked.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-text">
+              <h4>Travel Protection Included</h4>
+              <p>Every booking includes our comprehensive travel insurance package.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">🌿</div>
+            <div class="feature-text">
+              <h4>Carbon Neutral Travel</h4>
+              <p>We offset 100% of the carbon footprint for every journey we craft.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <div class="feature-icon">👤</div>
+            <div class="feature-text">
+              <h4>Personal Concierge</h4>
+              <p>A dedicated travel specialist is assigned to your booking from day one.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Form -->
+      <div>
+        <div class="booking-form">
+          <h3 class="form-title">Book Your Slot</h3>
+          <p class="form-subtitle">Complete details to reserve your journey</p>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>First Name</label>
+              <input type="text" id="firstName" placeholder="Emma" />
+            </div>
+            <div class="form-group">
+              <label>Last Name</label>
+              <input type="text" id="lastName" placeholder="Watson" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" id="email" placeholder="emma@example.com" />
+          </div>
+
+          <div class="form-group">
+            <label>Destination</label>
+            <select id="destination">
+              <option value="">Select a destination</option>
+              <option value="Kyoto, Japan|2890">Kyoto, Japan — From $2,890</option>
+              <option value="Marrakech, Morocco|1990">Marrakech, Morocco — From $1,990</option>
+              <option value="Amalfi Coast, Italy|3450">Amalfi Coast, Italy — From $3,450</option>
+              <option value="Patagonia, Argentina|4200">Patagonia, Argentina — From $4,200</option>
+              <option value="Maldives|5200">Maldives — From $5,200</option>
+              <option value="Santorini, Greece|2750">Santorini, Greece — From $2,750</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Departure Date</label>
+              <input type="date" id="depDate" />
+            </div>
+            <div class="form-group">
+              <label>Return Date</label>
+              <input type="date" id="retDate" />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Travellers</label>
+              <select id="travellers">
+                <option value="1">1 Person</option>
+                <option value="2" selected>2 People</option>
+                <option value="3">3 People</option>
+                <option value="4">4 People</option>
+                <option value="5">5+ People</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Package Tier</label>
+              <select id="package">
+                <option value="1">Essential (×1.0)</option>
+                <option value="1.35" selected>Premium (×1.35)</option>
+                <option value="1.75">Luxury (×1.75)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="price-preview">
+            <div>
+              <div class="price-label">Estimated Total</div>
+              <div class="price-amount" id="priceDisplay">$0</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="price-note">Per booking</div>
+              <div class="price-note" id="nightsDisplay"></div>
+            </div>
+          </div>
+
+          <button class="btn-book" onclick="proceedToPayment()">Continue to Payment →</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <strong>VOYAGER</strong> · Crafting extraordinary journeys since 2008 · hello@voyager.travel
+  </footer>
+
+</div>
+<!-- ══ END MAIN PAGE ══ -->
+
+
+<!-- ══ PAYMENT PAGE ══ -->
+<div id="payment-page">
+  <div class="payment-container">
+
+    <button class="back-btn" onclick="goBack()">← Back to Booking</button>
+
+    <div class="payment-header">
+      <h1>Secure Payment</h1>
+      <p>Your journey is almost confirmed. Complete payment to lock in your slot.</p>
+    </div>
+
+    <div class="payment-grid">
+
+      <!-- Payment Form -->
+      <div class="payment-form-card">
+        <div class="card-title">Payment Details</div>
+
+        <div class="payment-methods">
+          <button class="pay-method active" onclick="setMethod(this,'card')">💳 Card</button>
+          <button class="pay-method" onclick="setMethod(this,'paypal')">🅿️ PayPal</button>
+          <button class="pay-method" onclick="setMethod(this,'apple')">🍎 Apple Pay</button>
+        </div>
+
+        <div id="card-fields">
+          <div class="form-group">
+            <label>Cardholder Name</label>
+            <input type="text" id="cardName" placeholder="Emma Watson" />
+          </div>
+          <div class="form-group card-number-wrap">
+            <label>Card Number</label>
+            <input type="text" id="cardNum" placeholder="0000  0000  0000  0000" maxlength="19" oninput="formatCard(this)" />
+            <div class="card-icons">💳</div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Expiry Date</label>
+              <input type="text" id="expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)" />
+            </div>
+            <div class="form-group">
+              <label>CVV</label>
+              <input type="text" id="cvv" placeholder="•••" maxlength="3" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Billing Address</label>
+          <input type="text" id="address" placeholder="123 Main Street, City, Country" />
+        </div>
+
+        <button class="btn-pay" onclick="confirmPayment()">
+          Pay <span id="payBtnAmount">$0</span> · Confirm Booking
+        </button>
+
+        <div class="trust-badges">
+          <span class="badge">🔒 SSL Secured</span>
+          <span class="badge">✓ PCI Compliant</span>
+          <span class="badge">🛡️ Fraud Protected</span>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <div class="order-summary">
+        <div class="card-title">Order Summary</div>
+
+        <div class="order-item">
+          <span class="order-item-label">🌍 Destination</span>
+          <span class="order-item-value" id="sumDestination">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">👥 Travellers</span>
+          <span class="order-item-value" id="sumTravellers">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">📅 Departure</span>
+          <span class="order-item-value" id="sumDep">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">📅 Return</span>
+          <span class="order-item-value" id="sumRet">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">⭐ Package</span>
+          <span class="order-item-value" id="sumPackage">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">Guest Name</span>
+          <span class="order-item-value" id="sumName">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">Base Price</span>
+          <span class="order-item-value" id="sumBase">—</span>
+        </div>
+        <div class="order-item">
+          <span class="order-item-label">Taxes & Fees (12%)</span>
+          <span class="order-item-value" id="sumTax">—</span>
+        </div>
+
+        <div class="order-total">
+          <span class="order-total-label">Total Due</span>
+          <span class="order-total-value" id="sumTotal">—</span>
+        </div>
+
+        <div style="margin-top:1.5rem;padding:1rem;background:var(--sand);border-radius:.8rem;font-size:.8rem;color:var(--earth);line-height:1.7;">
+          ✦ Free cancellation up to 30 days before departure<br>
+          ✦ 24-hour booking confirmation by email<br>
+          ✦ Dedicated concierge support included
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- ══ END PAYMENT PAGE ══ -->
+
+
+<!-- ══ SUCCESS PAGE ══ -->
+<div id="success-page">
+  <div class="success-icon">✓</div>
+  <h1 class="success-title">Booking Confirmed!</h1>
+  <p class="success-sub">Your journey has been reserved. You'll receive a confirmation email shortly with your full itinerary and concierge details.</p>
+  <div class="booking-ref">
+    <span class="ref-label">Booking Reference</span>
+    <span id="bookingRef">—</span>
+  </div>
+  <br>
+  <a href="#" onclick="resetAll()" class="btn-primary" style="text-decoration:none;display:inline-block;">Plan Another Journey</a>
+</div>
+<!-- ══ END SUCCESS PAGE ══ -->
+
+
+<script>
+  /* ── State ── */
+  let bookingData = {};
+
+  /* ── Pricing ── */
+  const prices = {
+    'Kyoto, Japan': 2890, 'Marrakech, Morocco': 1990,
+    'Amalfi Coast, Italy': 3450, 'Patagonia, Argentina': 4200,
+    'Maldives': 5200, 'Santorini, Greece': 2750
+  };
+  const packageNames = { '1': 'Essential', '1.35': 'Premium', '1.75': 'Luxury' };
+
+  function calcPrice() {
+    const sel = document.getElementById('destination').value;
+    const travellers = parseInt(document.getElementById('travellers').value) || 2;
+    const pkg = parseFloat(document.getElementById('package').value) || 1;
+    if (!sel) { document.getElementById('priceDisplay').textContent = '$0'; return; }
+    const [dest] = sel.split('|');
+    const base = prices[dest] || parseInt(sel.split('|')[1]) || 0;
+    const total = Math.round(base * travellers * pkg);
+    document.getElementById('priceDisplay').textContent = '$' + total.toLocaleString();
+  }
+
+  ['destination','travellers','package'].forEach(id =>
+    document.getElementById(id).addEventListener('change', calcPrice)
+  );
+
+  /* ── Select destination from card click ── */
+  function selectDestination(name, price) {
+    const sel = document.getElementById('destination');
+    for (let opt of sel.options) {
+      if (opt.value.startsWith(name)) { sel.value = opt.value; break; }
+    }
+    calcPrice();
+    document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  /* ── Proceed to payment ── */
+  function proceedToPayment() {
+    const first = document.getElementById('firstName').value.trim();
+    const last  = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const dest  = document.getElementById('destination').value;
+    const dep   = document.getElementById('depDate').value;
+    const ret   = document.getElementById('retDate').value;
+
+    if (!first || !last)  return alert('Please enter your full name.');
+    if (!email || !email.includes('@')) return alert('Please enter a valid email address.');
+    if (!dest)  return alert('Please select a destination.');
+    if (!dep)   return alert('Please select a departure date.');
+    if (!ret)   return alert('Please select a return date.');
+    if (new Date(ret) <= new Date(dep)) return alert('Return date must be after departure date.');
+
+    const [destName] = dest.split('|');
+    const travellers = parseInt(document.getElementById('travellers').value);
+    const pkgVal     = document.getElementById('package').value;
+    const base       = prices[destName] || 0;
+    const subtotal   = Math.round(base * travellers * parseFloat(pkgVal));
+    const tax        = Math.round(subtotal * 0.12);
+    const total      = subtotal + tax;
+
+    bookingData = { first, last, email, destName, dep, ret, travellers, pkg: pkgVal, subtotal, tax, total };
+
+    /* Populate payment page */
+    document.getElementById('sumDestination').textContent = destName;
+    document.getElementById('sumTravellers').textContent  = travellers + (travellers === 1 ? ' person' : ' people');
+    document.getElementById('sumDep').textContent = formatDate(dep);
+    document.getElementById('sumRet').textContent = formatDate(ret);
+    document.getElementById('sumPackage').textContent = packageNames[pkgVal] || pkgVal;
+    document.getElementById('sumName').textContent    = first + ' ' + last;
+    document.getElementById('sumBase').textContent    = '$' + subtotal.toLocaleString();
+    document.getElementById('sumTax').textContent     = '$' + tax.toLocaleString();
+    document.getElementById('sumTotal').textContent   = '$' + total.toLocaleString();
+    document.getElementById('payBtnAmount').textContent = '$' + total.toLocaleString();
+    document.getElementById('cardName').value = first + ' ' + last;
+
+    showPage('payment-page');
+  }
+
+  /* ── Payment method toggle ── */
+  function setMethod(el, type) {
+    document.querySelectorAll('.pay-method').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('card-fields').style.display = type === 'card' ? 'block' : 'none';
+  }
+
+  /* ── Card formatting ── */
+  function formatCard(input) {
+    let v = input.value.replace(/\D/g,'').substring(0,16);
+    input.value = v.replace(/(.{4})/g,'$1  ').trim();
+  }
+  function formatExpiry(input) {
+    let v = input.value.replace(/\D/g,'');
+    if (v.length >= 3) v = v.substring(0,2) + ' / ' + v.substring(2);
+    input.value = v;
+  }
+
+  /* ── Confirm payment ── */
+  function confirmPayment() {
+    const activeMethod = document.querySelector('.pay-method.active').textContent;
+    if (activeMethod.includes('Card')) {
+      const num  = document.getElementById('cardNum').value.replace(/\s/g,'');
+      const exp  = document.getElementById('expiry').value;
+      const cvv  = document.getElementById('cvv').value;
+      const name = document.getElementById('cardName').value.trim();
+      if (!name)           return alert('Please enter the cardholder name.');
+      if (num.length < 16) return alert('Please enter a valid 16-digit card number.');
+      if (!exp || exp.length < 4) return alert('Please enter a valid expiry date.');
+      if (cvv.length < 3)  return alert('Please enter a valid CVV.');
+    }
+
+    /* Generate booking reference */
+    const ref = 'VOY-' + Math.random().toString(36).substring(2,7).toUpperCase() + '-' + Date.now().toString().slice(-4);
+    document.getElementById('bookingRef').textContent = ref;
+
+    showPage('success-page');
+  }
+
+  /* ── Navigation ── */
+  function showPage(id) {
+    ['main-page','payment-page','success-page'].forEach(p => {
+      const el = document.getElementById(p);
+      el.classList.remove('active');
+      if (p === 'main-page') el.classList.add('hidden'); else el.style.display = 'none';
+    });
+
+    const target = document.getElementById(id);
+    if (id === 'main-page') {
+      target.classList.remove('hidden');
+    } else {
+      target.style.display = 'block';
+      target.classList.add('active');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function goBack() {
+    document.getElementById('payment-page').style.display = 'none';
+    document.getElementById('payment-page').classList.remove('active');
+    const main = document.getElementById('main-page');
+    main.classList.remove('hidden');
+    setTimeout(() => document.getElementById('booking').scrollIntoView({ behavior: 'smooth' }), 100);
+  }
+
+  function resetAll() {
+    document.getElementById('success-page').style.display = 'none';
+    document.getElementById('success-page').classList.remove('active');
+    document.getElementById('main-page').classList.remove('hidden');
+    ['firstName','lastName','email','depDate','retDate','cardNum','expiry','cvv','address'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    document.getElementById('destination').value = '';
+    document.getElementById('travellers').value = '2';
+    document.getElementById('package').value = '1.35';
+    calcPrice();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  /* ── Helpers ── */
+  function formatDate(d) {
+    if (!d) return '—';
+    return new Date(d + 'T12:00:00').toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+  }
+
+  /* ── Set min date to today ── */
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('depDate').min = today;
+  document.getElementById('retDate').min = today;
+  document.getElementById('depDate').addEventListener('change', function() {
+    document.getElementById('retDate').min = this.value;
+  });
+
+  /* ── Smooth scroll for nav links ── */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href').slice(1);
+      const el = document.getElementById(id);
+      if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth' }); }
+    });
+  });
+</script>
+</body>
+</html>
